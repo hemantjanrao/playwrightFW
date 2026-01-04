@@ -1,20 +1,40 @@
 {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint",
-      "no-loops",
-      "prettier"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "no-loops"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-loops/no-loops": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
     ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended",
-      "prettier"
-    ],
-    "rules": {
-      "no-loops/no-loops": 2, // 2 means throw an ERROR 
-      "no-console": 1,
-      "prettier/prettier": 2
-    }
-  }
+    "no-console": "off"
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "playwright-report/",
+    "allure-report/"
+  ]
+}

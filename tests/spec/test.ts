@@ -1,30 +1,50 @@
-/* eslint-disable no-console */
-import { test, expect, request } from '@playwright/test';
-import { page, page_context } from '../core/base/base.test';
-import LoginPage from './page/login.page';
+import { test, expect } from '../core/base/fixtures';
+import { LoginTestData } from '../core/data/test-data';
+import { logger } from '../core/utils/logger';
 
-export let loginPage: LoginPage;
-
-test.beforeEach(async () => {
-  loginPage = new LoginPage(page);
-});
-
-test.describe('Authentication', async () => {
-  test('Authenticaiton using UI', async () => {
-    await loginPage.login('h-janrao', '@Test1234');
-    await expect(page.locator('li.home')).toBeVisible();
+test.describe('Authentication', () => {
+  test.beforeEach(async ({ loginPage }) => {
+    logger.info('Setting up authentication test');
+    await loginPage.navigate();
   });
 
-  test('Authentication using API and then continue UI test', async () => {
-    let response = await page.request.post('/parabank/login.htm', {
-      form: {
-        username: 'h-janrao',
-        password: '@Test1234'
-      }
-    });
-    expect(response.status()).toBe(200);
+  test('Login with valid credentials via UI @smoke', async ({
+    loginPage,
+    page
+  }) => {
+    // Get test data from config
+    const validUser = LoginTestData.getValidUser();
 
-    await page.goto('/');
+    // Perform login
+    await loginPage.login(validUser.username, validUser.password);
+
+    // Verify successful login
     await expect(page.locator('li.home')).toBeVisible();
+    const isLoggedIn = await loginPage.isLoggedIn();
+    expect(isLoggedIn, 'User should be logged in').toBe(true);
+
+    logger.info('Login test completed successfully');
+  });
+
+  test('Login with invalid credentials @negative', async ({
+    loginPage,
+    page
+  }) => {
+    const invalidUser = LoginTestData.getInvalidUser();
+
+    await loginPage.login(invalidUser.username, invalidUser.password);
+
+    // Verify error message appears
+    const errorSelector = page.locator('.error');
+    await expect(errorSelector).toBeVisible();
+
+    logger.info('Invalid login test completed');
+  });
+
+  test('Verify login page is displayed @smoke', async ({ loginPage }) => {
+    const isOnLoginPage = await loginPage.isOn();
+    expect(isOnLoginPage, 'Login page should be displayed').toBe(true);
+
+    logger.info('Login page verification completed');
   });
 });

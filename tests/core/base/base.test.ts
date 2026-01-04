@@ -1,59 +1,22 @@
-import {
-  test,
-  chromium,
-  BrowserContext,
-  Page,
-  Browser,
-  firefox,
-  webkit
-} from '@playwright/test';
+/**
+ * Base test configuration
+ *
+ * NOTE: This file is now deprecated in favor of using custom fixtures.
+ * Import test and expect from './fixtures' instead of '@playwright/test'
+ *
+ * The custom browser launch logic has been removed as it was an anti-pattern.
+ * Playwright's built-in fixtures handle browser, context, and page creation automatically.
+ *
+ * Migration guide:
+ * - Old: import { test } from '@playwright/test'; import { page } from '../core/base/base.test';
+ * - New: import { test, expect } from '../core/base/fixtures';
+ *
+ * The new fixture-based approach provides:
+ * - Automatic page object instantiation
+ * - Better test isolation
+ * - Simplified test code
+ * - Proper cleanup
+ */
 
-export let page_context: BrowserContext;
-export let page: Page;
-export let browser: Browser;
-
-test.describe.configure({ mode: 'parallel' });
-
-enum Browsers {
-  CHROMIUM = 'chromium',
-  FIREFOX = 'firefox',
-  WEBKIT = 'webkit'
-}
-
-test.beforeEach(async ({ browserName }) => {
-  switch (browserName) {
-    case Browsers.CHROMIUM: {
-      browser = await chromium.launch({
-        headless: true
-      });
-      break;
-    }
-    case Browsers.FIREFOX: {
-      browser = await firefox.launch({
-        headless: true
-      });
-      break;
-    }
-    case Browsers.WEBKIT: {
-      browser = await webkit.launch({
-        headless: true
-      });
-      break;
-    }
-    default: {
-      // eslint-disable-next-line no-console
-      console.log('No broswer specified');
-    }
-  }
-
-  page_context = await browser.newContext();
-  await page_context.tracing.start({ screenshots: true, snapshots: true });
-  page = await page_context.newPage();
-});
-
-test.afterEach(async () => {
-  await page_context.tracing.stop({ path: 'trace.zip' });
-  await page.close();
-  await page_context.close();
-  await browser.close();
-});
+// This file is kept for backwards compatibility but should not be used in new tests
+export {};
