@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --config .prettierrc 'tests/**/*.ts' --write",
+    "format:check": "prettier --config .prettierrc 'tests/**/*.ts' --check",
     "test": "npx playwright test --project=chromium",
     "test:all": "npx playwright test",
     "test:headed": "npx playwright test --headed --project=chromium",
